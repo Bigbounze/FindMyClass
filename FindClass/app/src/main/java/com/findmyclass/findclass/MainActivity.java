@@ -1,6 +1,7 @@
 package com.findmyclass.findclass;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,7 +10,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -25,10 +30,21 @@ public class MainActivity extends AppCompatActivity
     int indiceEdificioSeleccionado = 0;
     int indiceAulaSeeccionado = 0;
 
+    DatabaseHelper db;
+
+    ListView aulaList;
+
+    ArrayList<String> listItems;
+    ArrayAdapter adapter;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DatabaseHelper(this);
 
         listaFacultades = (Spinner)findViewById(R.id.busquedaFacultad);
         listaEdificios = (Spinner)findViewById(R.id.busquedaEdificio);
@@ -43,8 +59,22 @@ public class MainActivity extends AppCompatActivity
         ArrayAdapter<String> adaptadorAulas = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nombresAulas);
         listaAulas.setAdapter(adaptadorAulas);
 
+        listItems = new ArrayList<>();
+
+        //aulaList = findViewById((R.id.));
+
+        viewData();
+
+        listaAulas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String text = listaAulas.getItemAtPosition(i).toString();
+                Toast.makeText(MainActivity.this, ""+text, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //Cabiar el contenido del spinner en funcion de las opciones anteriores y el de la facultad dependiendo de la ciudad del perfil
+        //Cambiar el contenido del spinner en funcion de las opciones anteriores y el de la facultad dependiendo de la ciudad del perfil
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
         listaFacultades.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -76,7 +106,20 @@ public class MainActivity extends AppCompatActivity
 */
     }
 
+    private void viewData(){
+        Cursor cursor = db.viewData();
 
+        if(cursor.getCount() == 0 ){
+            Toast.makeText(this,"No data to show", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()){
+                listItems.add(cursor.getString(1));
+            }
+
+            adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems);
+            listaAulas.setAdapter(adapter);
+        }
+    }
 
     public void ejecutar_busqueda(View vista)
     {
