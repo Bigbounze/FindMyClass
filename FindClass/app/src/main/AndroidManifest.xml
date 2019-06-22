@@ -27,11 +27,12 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyDXf35CZVWJEzgjllFxGtuIaQVWllx5bHI" />
 
         <activity
             android:name=".MapaUniversidad"
             android:label="@string/title_activity_mapa_universidad"></activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,6 +47,10 @@
         <activity android:name=".HorarioClase" />
         <activity android:name=".PerfilClase" />
         <activity android:name=".ListaAulasClase" />
+        <activity android:name=".ListarClasesActivity" />
+        <activity android:name=".MostrarClase" />
+
+
     </application>
 
 </manifest>

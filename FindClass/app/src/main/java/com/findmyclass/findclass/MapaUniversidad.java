@@ -14,9 +14,11 @@ public class MapaUniversidad extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleMap mMap;
 
-    double[] latitudes, longitudes;
+    //double[] latitudes, longitudes;
+    double latitudes, longitudes;
 
     String nombreAsignatura;
+    String nombreAula;
     String[] descripciones;
 
     int numeroAulas;
@@ -26,11 +28,14 @@ public class MapaUniversidad extends FragmentActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         Bundle datos = getIntent().getExtras();
 
-        numeroAulas = datos.getInt("numeroAulas");
-        descripciones = datos.getStringArray("descripciones");
+        //numeroAulas = datos.getInt("numeroAulas");
+        //descripciones = datos.getStringArray("descripciones");
         nombreAsignatura = datos.getString("nombreAsignatura");
-        latitudes = datos.getDoubleArray("latitudes");
-        longitudes = datos.getDoubleArray("longitudes");
+        nombreAula = datos.getString("nombreAula");
+        //latitudes = datos.getDoubleArray("latitudes");
+        //longitudes = datos.getDoubleArray("longitudes");
+        latitudes = datos.getDouble("latitudes");
+        longitudes = datos.getDouble("longitudes");
 
         setContentView(R.layout.activity_mapa_universidad);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -54,7 +59,13 @@ public class MapaUniversidad extends FragmentActivity implements OnMapReadyCallb
     {
         mMap = googleMap;
 
-        if(numeroAulas == 1)
+        LatLng busqueda = new LatLng(latitudes, longitudes);
+        //mMap.addMarker(new MarkerOptions().position(busqueda).title(nombreAsignatura).snippet(descripciones[0]));
+        mMap.addMarker(new MarkerOptions().position(busqueda).title(nombreAsignatura).snippet(nombreAula));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(busqueda));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(busqueda, 18));
+
+        /*if(numeroAulas == 1)
         {
             LatLng busqueda = new LatLng(latitudes[0], longitudes[0]);
             mMap.addMarker(new MarkerOptions().position(busqueda).title(nombreAsignatura).snippet(descripciones[0]));
@@ -72,7 +83,7 @@ public class MapaUniversidad extends FragmentActivity implements OnMapReadyCallb
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLng(busquedas[0]));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(busquedas[0], 18), 5000, null);
-        }
+        }*/
 
         mMap.getMaxZoomLevel();
 

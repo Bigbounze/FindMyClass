@@ -19,7 +19,7 @@ public class BusquedaAvanzada extends Activity
     Spinner listaAulas;
     Spinner listaCiudades;
 
-    String[] nombreCiudades = {"Ciudades", "Milán", "Granada"};
+    String[] nombreCiudades = {"Ciudades", "Milano", "Granada"};
     String[] nombresFacultadesGranada = {"Facultades", "ETSIIT", "Ciencias", "Cartuja"};
     String[] nombresFacultadesMilan = {"Facultades", "Leonardo", "Bovisa", "Unimi"};
     String[] nombresEdificiosGranada = {"Edificios", "Aulas", "Biblioteca", "Barracón"};

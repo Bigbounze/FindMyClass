@@ -23,12 +23,37 @@ public class BusquedaClase extends Activity
     double[] latitudes;
     double[] longitudes;
 
+    Bundle datos;
+
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busqueda);
 
-        Bundle datos = getIntent().getExtras();
+        datos = getIntent().getExtras();
+        /*String datosObtenidos = "Asignatura: " + datos.getString("asignatura") + "\n"
+                + "Direccion: " + datos.getString("direccion") + "\n"
+                + "Planta: " + datos.getString("planta") + "\n"
+                + "Edificio: " + datos.getString("edificio") + "\n"
+                + "Facultad: " + datos.getString("facultad") + "\n"
+                + "Aula: " + datos.getString("aula") + "\n"
+                + "Pais: " + datos.getString("pais") + "\n"
+                + "Ciudad: " + datos.getString("ciudad") + "\n";*/
+
+        String datosObtenidos = "Asignatura: " + datos.getString("asignatura") + "\n"
+                + "Dia: " + datos.getString("dia") + "\n"
+                + "Horario: " + datos.getString("horario") + "\n"
+                + "Direccion: " + datos.getString("direccion") + "\n"
+                + "Planta: " + datos.getString("planta") + "\n"
+                + "Edificio: " + datos.getString("edificio") + "\n"
+                + "Facultad: " + datos.getString("facultad") + "\n"
+                + "Aula: " + datos.getString("aula") + "\n"
+                + "Pais: " + datos.getString("pais") + "\n"
+                + "Ciudad: " + datos.getString("ciudad") + "\n";
+        TextView mostrarClase = findViewById(R.id.infoHorario);
+        mostrarClase.setText(datosObtenidos);
+
+        /*Bundle datos = getIntent().getExtras();
 
         String busqueda = datos.getString("busqueda");
         busqueda = busqueda.toUpperCase();
@@ -164,7 +189,7 @@ public class BusquedaClase extends Activity
 
             Button botonMapa = (Button) findViewById(R.id.mapa);
             botonMapa.setEnabled(true);
-        }
+        }*/
     }
 
 
@@ -218,11 +243,15 @@ public class BusquedaClase extends Activity
     public void AbrirMapa(View vista)
     {
         Intent i = new Intent(this, MapaUniversidad.class);
-        i.putExtra("latitudes", latitudes);
-        i.putExtra("longitudes", longitudes);
-        i.putExtra("nombreAsignatura", nombreAsignatura);
-        i.putExtra("descripciones", descripciones);
-        i.putExtra("numeroAulas", numeroAulas);
+        //i.putExtra("latitudes", datos.getDouble());
+        i.putExtra("longitudes", datos.getDouble("longitud"));
+        i.putExtra("latitudes", datos.getDouble("latitud"));
+        i.putExtra("nombreAsignatura", datos.getString("asignatura"));
+        i.putExtra("nombreAula", datos.getString("aula"));
+
+        //i.putExtra("nombreAsignatura", nombreAsignatura);
+        //i.putExtra("descripciones", descripciones);
+        //i.putExtra("numeroAulas", numeroAulas);
 
         startActivity(i);
     }
