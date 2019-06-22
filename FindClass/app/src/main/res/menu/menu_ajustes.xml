@@ -8,9 +8,6 @@
     <item android:id="@+id/horario"
         android:title="Horario"/>
 
-    <item android:id="@+id/busqueda_avanzada"
-        android:title="B. Avanzada"/>
-
     <item android:id="@+id/configuracion"
         android:title="Configuración"/>
 

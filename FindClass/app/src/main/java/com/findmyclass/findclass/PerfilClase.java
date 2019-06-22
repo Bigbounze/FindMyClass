@@ -16,9 +16,10 @@ public class PerfilClase extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.perfil);
 
-        listaCiudades = (Spinner)findViewById(R.id.busquedaAula);
+        listaCiudades = (Spinner)findViewById(R.id.ciudad);
 
-        ArrayAdapter<String> adaptadorFacultades = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nombresCiudades);
-        listaCiudades.setAdapter(adaptadorFacultades);
+        ArrayAdapter<String> adaptadorCiudades = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nombresCiudades);
+        listaCiudades.setAdapter(adaptadorCiudades);
+
     }
 }
