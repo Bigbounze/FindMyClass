@@ -2,19 +2,290 @@ package com.findmyclass.findclass;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class BusquedaAvanzada extends Activity
 {
-    Spinner listaFacultades;
+    Spinner comboCiudades;
+    Spinner comboFacultades;
+    Spinner comboEdificios;
+    Spinner comboAulas;
+
+    ArrayList<String> listaCiudades;
+    ArrayList<String> listaFacultades;
+    ArrayList<String> listaEdificios;
+    ArrayList<String> listaAulas;
+
+    String ciudad;
+    String facultad;
+    String edificio;
+    String aula;
+
+
+    DBHelper adminSQL;
+
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.busquedaavanzada);
+
+        comboCiudades = findViewById(R.id.busquedaCiudades);
+        comboFacultades = findViewById(R.id.busquedaFacultad);
+        comboEdificios = findViewById(R.id.busquedaEdificio);
+        comboAulas = findViewById(R.id.busquedaAula);
+
+        comboFacultades.setEnabled(false);
+
+
+        adminSQL = new DBHelper(getApplicationContext(), SQLConstants.DB, null, 1);
+
+        // CIUDADES
+        consultarListaCiudades();
+        ArrayAdapter<String> adaptadorCiudades = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,listaCiudades);
+        comboCiudades.setAdapter(adaptadorCiudades);
+
+        // FACULTADES
+        consultarListaFacultades();
+        ArrayAdapter<String> adaptadorFacultades = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,listaFacultades);
+        comboFacultades.setAdapter(adaptadorFacultades);
+
+        // EDIFICIOS
+        consultarListaEdificios();
+        ArrayAdapter<String> adaptadorEdificios = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,listaEdificios);
+        comboEdificios.setAdapter(adaptadorEdificios);
+
+        // AULAS
+        consultarListaAulas();
+        ArrayAdapter<String> adaptadorAulas = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,listaAulas);
+        comboAulas.setAdapter(adaptadorAulas);
+
+        comboAulas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                aula = listaAulas.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
+
+    private void consultarListaCiudades(){
+        SQLiteDatabase bd = adminSQL.getReadableDatabase();
+        listaCiudades = new ArrayList<>();
+        listaCiudades.add("Select City");
+
+        Cursor cursor = bd.rawQuery("SELECT * FROM " + SQLConstants.tableClases, null);
+
+        while (cursor.moveToNext()){
+            if(!listaCiudades.contains(cursor.getString(8))){
+                listaCiudades.add(cursor.getString(8));
+            }
+        }
+        bd.close();
+    }
+
+    private void consultarListaFacultades(){
+        final SQLiteDatabase bd = adminSQL.getReadableDatabase();
+        listaFacultades = new ArrayList<>();
+        listaFacultades.add("Select School");
+
+        comboCiudades.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position == 0){
+                    comboFacultades.setEnabled(false);
+                } else {
+                    comboFacultades.setEnabled(true);
+                    ciudad = listaCiudades.get(position);
+
+                    Cursor cursor;
+                    cursor = bd.rawQuery("SELECT * FROM " + SQLConstants.tableClases + " WHERE ciudad = '"
+                            + listaCiudades.get(position) + "'", null);
+
+                    while (cursor.moveToNext()){
+                        if(!listaFacultades.contains(cursor.getString(5))){
+                            listaFacultades.add(cursor.getString(5));
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void consultarListaEdificios(){
+        final SQLiteDatabase bd = adminSQL.getReadableDatabase();
+        listaEdificios = new ArrayList<>();
+        listaEdificios.add("Select Building");
+
+        comboFacultades.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                if (position == 0){
+                    comboEdificios.setEnabled(false);
+                } else {
+                    comboEdificios.setEnabled(true);
+                    facultad = listaFacultades.get(position);
+
+                    Cursor cursor;
+                    cursor = bd.rawQuery("SELECT * FROM " + SQLConstants.tableClases + " WHERE ciudad = '"
+                            + ciudad + "' AND facultad = '" + listaFacultades.get(position) + "'", null);
+
+                    while (cursor.moveToNext()){
+                        if(!listaEdificios.contains(cursor.getString(4))){
+                            listaEdificios.add(cursor.getString(4));
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        /*Cursor cursor = bd.rawQuery("SELECT * FROM " + SQLConstants.tableClases + " WHERE ciudad = '"
+                + ciudad + "'", null);
+
+        while (cursor.moveToNext()){
+            if(!listaFacultades.contains(cursor.getString(5))){
+                listaFacultades.add(cursor.getString(5));
+            }
+        }*/
+    }
+
+    private void consultarListaAulas(){
+        final SQLiteDatabase bd = adminSQL.getReadableDatabase();
+        listaAulas = new ArrayList<>();
+        listaAulas.add("Select Classroom");
+
+        comboEdificios.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                if (position == 0){
+                    comboAulas.setEnabled(false);
+                } else {
+                    comboAulas.setEnabled(true);
+                    edificio = listaEdificios.get(position);
+
+                    Cursor cursor;
+                    cursor = bd.rawQuery("SELECT * FROM " + SQLConstants.tableClases + " WHERE ciudad = '"
+                            + ciudad + "' AND facultad = '" + facultad + "' AND edificio = '"
+                            + listaEdificios.get(position) + "'", null);
+
+                    while (cursor.moveToNext()){
+                        if(!listaAulas.contains(cursor.getString(6))){
+                            listaAulas.add(cursor.getString(6));
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+
+    public void Buscar(View view) {
+        //SQLite
+        try {
+            DBHelper adminSQL = new DBHelper(this, SQLConstants.DB, null, 1);
+            SQLiteDatabase bd = adminSQL.getReadableDatabase();
+            String sql = "SELECT * FROM clases WHERE ciudad = '" + ciudad + "' AND facultad = '"
+                    + facultad + "' AND edificio = '" + edificio + "' AND aula = '" + aula + "'";
+
+            Cursor cursor = bd.rawQuery(sql, null);
+            if (cursor.moveToFirst()) {
+                Intent i = new Intent(this, BusquedaClase.class);
+                i.putExtra("asignatura", cursor.getString(1));
+                i.putExtra("direccion", cursor.getString(2));
+                i.putExtra("planta", cursor.getString(3));
+                i.putExtra("edificio", cursor.getString(4));
+                i.putExtra("facultad", cursor.getString(5));
+                i.putExtra("aula", cursor.getString(6));
+                i.putExtra("pais", cursor.getString(7));
+                i.putExtra("ciudad", cursor.getString(8));
+                i.putExtra("latitud", cursor.getDouble(9));
+                i.putExtra("longitud", cursor.getDouble(10));
+                i.putExtra("dia", cursor.getString(11));
+                i.putExtra("horario", cursor.getString(12));
+                startActivity(i);
+
+            } else {
+                Toast.makeText(this, "NO existe la ASIGNATURA", Toast.LENGTH_SHORT).show();
+            }
+            bd.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*public void Ejecutar_busqueda(View vista)
+    {
+        if(indiceFacultadSeleccionada != 0 || indiceEdificioSeleccionado != 0 || indiceAulaSeleccionado != 0)
+        {
+            Intent i = new Intent(this, ListaAulasClase.class);
+
+            i.putExtra("facultad", indiceFacultadSeleccionada);
+            i.putExtra("edificio", indiceEdificioSeleccionado);
+            i.putExtra("aula", indiceAulaSeleccionado);
+
+            startActivity(i);
+
+        }
+        else
+        {
+            EditText cuadroBusqueda = (EditText)findViewById(R.id.resultado);
+            Intent i = new Intent(this, BusquedaClase.class);
+            String busqueda = cuadroBusqueda.getText().toString();
+
+            i.putExtra("busqueda", busqueda);
+            startActivity(i);
+        }
+
+    }*/
+}
+
+
+
+
+    /*Spinner listaFacultades;
     Spinner listaEdificios;
     Spinner listaAulas;
     Spinner listaCiudades;
@@ -277,4 +548,4 @@ public class BusquedaAvanzada extends Activity
         startActivity(i);
         finish();
     }
-}
+}*/

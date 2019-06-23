@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         try{
-            //CREAR BASE DE DATOS
-                //SQLiteDatabase bd = openOrCreateDatabase("dbClases.db", MODE_PRIVATE, null);
+                //CREAR BASE DE DATOS
+                SQLiteDatabase bd = openOrCreateDatabase("dbClases.db", MODE_PRIVATE, null);
 
 
                 //Open your local db as the input stream
@@ -91,11 +91,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        if(datos != null)
+        /*if(datos != null)
         {
             numeroAsignaturas = datos.getInt("numeroAsignaturas");
             idIncluidos = datos.getIntArray("idIncluidos");
-        }
+        }*/
     }
 
 
@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity
 
     public void BusquedaAvanzada(View vista)
     {
+
         Intent i = new Intent(this, BusquedaAvanzada.class);
         startActivity(i);
     }

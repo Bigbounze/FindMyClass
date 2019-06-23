@@ -48,7 +48,6 @@
         <activity android:name=".PerfilClase" />
         <activity android:name=".ListaAulasClase" />
         <activity android:name=".ListarClasesActivity" />
-        <activity android:name=".MostrarClase" />
 
 
     </application>
